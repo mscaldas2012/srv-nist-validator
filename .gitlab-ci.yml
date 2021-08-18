@@ -1,0 +1,17 @@
+# This file is a template, and might need editing before it works on your project.
+image: glenndphillips/alpine-java11-k8s:latest
+
+variables:
+  REVISION_TAG: 2.0.2-SNAPSHOT
+
+stages:
+  - build
+  - tag
+
+include:
+  - project: eip/ci_cd_template
+    file:  .gitlab-cicd-jib-build.yaml
+    ref: release-1.0.4
+  - project: eip/ci_cd_template
+    file:  .gitlab-cicd-docker-tag.yaml
+    ref: release-1.0.4

@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  version: '2.0'
+  title: 'NIST Validator'
+  description: 'API to maintain a list of profiles for several Programs and validate messages accordingly.'
+paths:
+  /profiles/{profileName}:
+    parameters:
+      - $ref: '#/components/parameters/profileName'
+
+    get:
+      summary: Retrieves the list of configuration files for this profile
+      responses:
+        200:
+          description: The list of files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationList'
+
+    post:
+      summary: Uploads a zip file with new configuration files for this profile.
+      parameters:
+        - in: formData
+          name: upfile
+          schema:
+            type: file
+
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Ok
+    delete:
+      summary: Deletes all configuration files for this Profile.
+      responses:
+        200:
+          description: Files successfully deleted.
+
+
+  /profiles/{profileName}/{configFile}:
+    parameters:
+      - $ref: '#/components/parameters/profileName'
+      - $ref: '#/components/parameters/configFile'
+
+    get:
+      summary: Retrieves a specific configuration file for the profile.
+      responses:
+        200:
+          description: File successfully uploaded and configuration files updated.
+
+    post:
+      summary: Updates the given configuration file for this profile.
+      responses:
+        200:
+          description: File successfully Uploaded/updated
+
+    delete:
+      summary: Deletes the given config file.
+      responses:
+        204:
+          description: File successfully deleted.
+
+  /profiles/{profileName}/$validate:
+    parameters:
+      - $ref: '#/components/parameters/profileName'
+
+    post:
+      summary: Validates the body content against the profile
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              format: HL7
+
+      responses:
+        200:
+          description: File successfully uploaded and configuration files updated.
+
+
+components:
+  schemas:
+    ConfigurationList:
+      type: object
+
+
+  parameters:
+    profileName:
+      in: path
+      name: profileName
+      description: The profile name for the set of configuration files.
+      schema:
+        type: string
+      required: true
+    configFile:
+      in: path
+      name: configFile
+      schema:
+        type: string
+        enum: [Profile, Constraints, ValueSets, Predicates]
+      required: true
+
+
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/mscaldas2012/nist-validator/2.0
+

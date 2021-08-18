@@ -1,0 +1,58 @@
+micronaut:
+  application:
+    name: nist-validator
+  server:
+    port: 10031
+    cors:
+      enabled: true
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
+
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+  loggers:
+    write-sensitive: false
+  stop:
+    enabled: false
+  health:
+    details-visible: ANONYMOUS
+
+#storage:
+#  default-bucket: cf-unittest-nist-profiles-test
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /api-docs
+
+storage:
+  default-bucket: nist-profiles-dev
+
+s2s-auth-config:
+  token: unit-test
+
+
+---
+about:
+  summary: This service performs validations on HL7 messages. It uses NIST's validator for profile based validation of 2.5.1 validation
+  docs: http://localhost:8080/docs
+  versions:
+    - v1
+  contacts:
+    -
+      name: Neeraja Lakshmipathy
+      email: ide9@cdc.gov
+      role: Sr. Developer
+    - name: Marcelo Caldas
+      email: mcq1@cdc.gov
+      role: Soft. Architect
+
+

@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates AWS Resources Needed by NIST Validator
+Parameters:
+  ENV:
+    Type: String
+    Description: The name of the environment
+    ConstraintDescription: Only lower case letters
+    AllowedValues: ['dev', 'qa', 'prr', 'onboard', 'prod', 'test']
+  ProjectName:
+    Type: String
+    Description: Name of the project this CF belongs to (only lower case letters and numbers)
+    ConstraintDescription: Only lower case letters
+    AllowedPattern: '[a-z0-9]+'
+
+
+Resources:
+  S3ProfilesBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub 'cf-${ProjectName}-nist-profiles-${ENV}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "AES256"
+#              KMSMasterKeyID:
+#                Fn::ImportValue:
+#                  !Sub 'cf-${ProjectName}-encryptionkey-${ENV}'
+      Tags:
+        - Key: Project
+          Value: !Ref 'ProjectName'
+        - Key: Component
+          Value: Nist Validator
+        - Key: Environment
+          Value: !Ref 'ENV'
+
+
+Outputs:
+  NistProfilesBucket:
+    Value: !GetAtt S3ProfilesBucket.Arn
+    Export:
+      Name: !Sub 'cf-${ProjectName}-nist-profiles-${ENV}'

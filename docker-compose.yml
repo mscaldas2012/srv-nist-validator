@@ -1,0 +1,26 @@
+version: '3'
+services:
+
+  mist-validator-service:
+    image: nist-validator-service
+    build: ./
+    ports:
+      - 10031:10031
+    environment:
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESSKEY: minio
+      MINIO_SECRET: minio123
+    depends_on:
+      - minio
+
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server ~/Downloads/minio
+
+
